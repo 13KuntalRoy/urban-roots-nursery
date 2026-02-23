@@ -1,6 +1,6 @@
 import { TreesIcon as TreePine, Phone, MapPin, Clock, Leaf, ShieldCheck, Truck, ChevronDown } from "lucide-react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useRef, useMemo } from "react";
 import heroImage from "@/assets/hero-trees.jpg";
 import { Button } from "@/components/ui/button";
 import TreeCatalog from "@/components/TreeCatalog";
@@ -8,20 +8,42 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSiteConfig, fetchFeatures, fetchOrderSteps } from "@/api/nursery";
 
-// Fallback constant removed in favor of API data
-
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { delay: i * 0.15, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
 const stagger = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  const words = text.split(" ");
+  return (
+    <span className={`inline-block ${className}`}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden mr-[0.2em] last:mr-0">
+          <motion.span
+            className="inline-block"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: i * 0.1,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
 };
 
 const AnimatedSection = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
@@ -45,10 +67,35 @@ const Index = () => {
   const { data: features } = useQuery({ queryKey: ["features"], queryFn: fetchFeatures });
   const { data: orderSteps } = useQuery({ queryKey: ["orderSteps"], queryFn: fetchOrderSteps });
 
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
   const whatsappNumber = siteConfig?.whatsapp_number || "6291381840";
 
   const scrollToCatalog = () => {
     document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const leaves = useMemo(() => [...Array(8)].map((_, i) => ({
+    id: i,
+    size: 16 + Math.random() * 24,
+    x: `${Math.random() * 90 + 5}vw`,
+    duration: 15 + Math.random() * 10,
+    delay: Math.random() * 5,
+    rotation: Math.random() * 360,
+  })), []);
+
+  const playClick = () => {
+    const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+    audio.volume = 0.2;
+    audio.play().catch(() => { }); // Catch if browser blocks auto-play
   };
 
   return (
@@ -57,110 +104,118 @@ const Index = () => {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50"
       >
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
           <motion.div
             className="flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            onClick={playClick}
           >
             <TreePine className="h-7 w-7 text-primary" />
-            <span className="font-display text-xl font-bold text-foreground">{siteConfig?.site_name || "UrbanRoots Nursery"}</span>
+            <span className="font-display text-xl font-bold text-foreground">
+              {siteConfig?.site_name || "UrbanRoots Nursery"}
+            </span>
           </motion.div>
           <div className="hidden md:flex items-center gap-8 font-body text-sm font-medium text-muted-foreground">
             {["Our Trees", "About Us", "Contact"].map((label, i) => (
               <motion.a
                 key={label}
                 href={`#${["catalog", "about", "contact"][i]}`}
-                className="relative hover:text-primary transition-colors"
+                className="relative hover:text-primary transition-colors py-2"
                 whileHover={{ y: -2 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                transition={{ type: "spring", stiffness: 400 }}
+                onClick={playClick}
               >
                 {label}
                 <motion.span
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full origin-left"
                   initial={{ scaleX: 0 }}
                   whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.3, ease: "circOut" }}
                 />
               </motion.a>
             ))}
           </div>
-          <WhatsAppButton phone={whatsappNumber} message="Hi! I'm interested in buying trees." size="sm" />
+          <div onClick={playClick}>
+            <WhatsAppButton phone={whatsappNumber} message="Hi! I'm interested in buying trees." size="sm" />
+          </div>
         </div>
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="relative h-[100vh] flex items-center justify-center overflow-hidden">
-        <motion.div
-          className="absolute inset-0"
-          initial={{ scale: 1.2 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.8, ease: "easeOut" }}
-        >
-          <img src={heroImage} alt="Beautiful tree nursery" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[hsl(var(--hero-overlay)/0.4)] via-[hsl(var(--hero-overlay)/0.55)] to-[hsl(var(--hero-overlay)/0.75)]" />
+      <section ref={heroRef} className="relative h-[100vh] flex items-center justify-center overflow-hidden">
+        <motion.div style={{ y, scale }} className="absolute inset-0">
+          <img src={heroImage} alt="Beautiful tree nursery" className="w-full h-full object-cover shadow-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[hsl(var(--hero-overlay)/0.4)] via-[hsl(var(--hero-overlay)/0.5)] to-[hsl(var(--background))]" />
         </motion.div>
 
         {/* Floating leaf particles */}
-        {[...Array(5)].map((_, i) => (
+        {leaves.map((leaf) => (
           <motion.div
-            key={i}
-            className="absolute text-primary-foreground/20"
-            initial={{ y: "100vh", x: `${15 + i * 18}vw`, rotate: 0 }}
-            animate={{ y: "-10vh", rotate: 360 }}
+            key={leaf.id}
+            className="absolute text-primary-foreground/15 pointer-events-none"
+            initial={{ y: "110vh", x: leaf.x, rotate: 0, opacity: 0 }}
+            animate={{
+              y: "-20vh",
+              rotate: leaf.rotation + 720,
+              opacity: [0, 1, 1, 0],
+              x: `calc(${leaf.x} + ${Math.sin(leaf.id) * 100}px)`
+            }}
             transition={{
-              duration: 12 + i * 3,
+              duration: leaf.duration,
               repeat: Infinity,
               ease: "linear",
-              delay: i * 2,
+              delay: leaf.delay,
             }}
           >
-            <Leaf className="h-6 w-6" />
+            <Leaf style={{ width: leaf.size, height: leaf.size }} />
           </motion.div>
         ))}
 
-        <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold gradient-text mb-6 leading-tight">
-              {siteConfig?.hero_title || "Bring Nature Home"}
-            </h1>
-          </motion.div>
+        <motion.div style={{ opacity }} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold gradient-text mb-8 leading-[1.1] pb-2">
+            <SplitText text={siteConfig?.hero_title || "Bring Nature Home"} />
+          </h1>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg md:text-xl text-primary-foreground/85 font-body mb-10 max-w-2xl mx-auto"
+            transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-xl md:text-2xl text-primary-foreground/90 font-body mb-12 max-w-2xl mx-auto leading-relaxed text-balance"
           >
             {siteConfig?.hero_subtitle || "Premium trees handpicked for your garden. Order through WhatsApp and we'll deliver beauty to your doorstep."}
           </motion.p>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            transition={{ delay: 1, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col sm:flex-row gap-6 justify-center"
           >
-            <Button variant="hero" size="lg" onClick={scrollToCatalog} className="group">
+            <Button variant="hero" size="xl" onClick={() => { playClick(); scrollToCatalog(); }} className="group px-8 py-7 text-lg rounded-full shadow-xl hover:shadow-primary/20 transition-all">
               Browse Collection
-              <ChevronDown className="h-4 w-4 group-hover:translate-y-1 transition-transform" />
+              <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
             </Button>
-            <WhatsAppButton phone={whatsappNumber} message={`Hi! I'd like to know more about your trees.`} size="lg" variant="whatsapp" label="Order via WhatsApp" />
+            <div onClick={playClick}>
+              <WhatsAppButton phone={whatsappNumber} message={`Hi! I'd like to know more about your trees.`} size="xl" variant="whatsapp" label="Order via WhatsApp" className="rounded-full shadow-xl" />
+            </div>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
         >
-          <ChevronDown className="h-8 w-8 text-primary-foreground/50" />
+          <span className="text-primary-foreground/40 text-[10px] uppercase tracking-[0.3em] font-body">Scroll</span>
+          <motion.div
+            className="w-[1px] h-12 bg-gradient-to-b from-primary/60 to-transparent"
+            animate={{ scaleY: [0, 1, 0], originY: [0, 0, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
         </motion.div>
       </section>
 
