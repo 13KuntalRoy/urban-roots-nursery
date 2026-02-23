@@ -2,7 +2,7 @@ from django.db import models
 
 class SiteConfig(models.Model):
     site_name = models.CharField(max_length=100, default="UrbanRoots Nursery")
-    whatsapp_number = models.CharField(max_length=20, default="6291381840")
+    whatsapp_number = models.CharField(max_length=20, default="+916291381840")
     address = models.TextField(default="220, JC Bose Rd, H B Town, Pallysree, Panihati, Khardaha, West Bengal 700110")
     hero_title = models.CharField(max_length=200, default="Bring Nature Home")
     hero_subtitle = models.TextField(default="Premium trees handpicked for your garden. Order through WhatsApp and we'll deliver beauty to your doorstep.")

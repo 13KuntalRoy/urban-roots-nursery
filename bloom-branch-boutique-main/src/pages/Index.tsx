@@ -77,7 +77,7 @@ const Index = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
-  const whatsappNumber = siteConfig?.whatsapp_number || "6291381840";
+  const whatsappNumber = siteConfig?.whatsapp_number || "+916291381840";
 
   const scrollToCatalog = () => {
     document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
