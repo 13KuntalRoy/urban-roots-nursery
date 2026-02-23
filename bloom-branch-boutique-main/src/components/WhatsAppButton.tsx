@@ -8,6 +8,7 @@ interface WhatsAppButtonProps {
   variant?: "whatsapp" | "default";
   label?: string;
   className?: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const WhatsAppButton = ({
@@ -17,12 +18,13 @@ const WhatsAppButton = ({
   variant = "whatsapp",
   label = "WhatsApp",
   className = "",
+  onClick,
 }: WhatsAppButtonProps) => {
   const encodedMessage = encodeURIComponent(message);
   const url = `https://wa.me/${phone}?text=${encodedMessage}`;
 
   return (
-    <Button variant={variant} size={size} className={className} asChild>
+    <Button variant={variant} size={size} className={className} asChild onClick={onClick}>
       <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
         <MessageCircle className="h-4 w-4" />
         {label}

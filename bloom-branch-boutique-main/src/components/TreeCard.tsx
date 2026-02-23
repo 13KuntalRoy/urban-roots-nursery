@@ -2,7 +2,7 @@ import * as React from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import { MEDIA_BASE_URL } from "@/api/nursery";
+import { Link } from "react-router-dom";
 
 export interface Tree {
   id: number;
@@ -78,46 +78,51 @@ const TreeCard: React.FC<TreeCardProps> = ({ tree, whatsappNumber, index }) => {
       }}
       className="perspective-1000 group relative bg-card rounded-2xl border border-border/60 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
     >
-      <div style={{ transform: "translateZ(50px)" }} className="backface-hidden">
-        <div className="aspect-[4/3] overflow-hidden bg-muted relative">
-          <motion.img
-            src={tree.image.startsWith('http') ? tree.image.replace('http://localhost:8000', '') : tree.image}
-            alt={tree.name}
-            className="w-full h-full object-cover object-center"
-            loading="lazy"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          />
-          {/* Shimmer light effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{
-              x: useTransform(mouseXSpring, [-0.5, 0.5], ["-100%", "100%"]),
-            }}
-          />
-          <div className="absolute top-3 right-3">
-            <Badge variant="secondary" className="font-body text-xs backdrop-blur-sm bg-secondary/80 shadow-md">
-              {tree.category}
-            </Badge>
-          </div>
-        </div>
-        <div className="p-6 relative">
-          <h3 className="font-display text-xl font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">{tree.name}</h3>
-          <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{tree.description}</p>
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xs text-muted-foreground font-body">Starting at</span>
-              <span className="block text-2xl font-display font-bold text-primary">₹{tree.price}</span>
-            </div>
-            <WhatsAppButton
-              phone={whatsappNumber}
-              message={`Hi! I'd like to order: ${tree.name} (₹${tree.price})`}
-              size="sm"
-              variant="whatsapp"
-              label="Order Now"
+      <div style={{ transform: "translateZ(50px)" }} className="backface-hidden h-full">
+        <Link to={`/tree/${tree.id}`} className="block h-full">
+          <div className="aspect-[4/3] overflow-hidden bg-muted relative">
+            <motion.img
+              src={tree.image.startsWith('http') ? tree.image.replace('http://localhost:8000', '') : tree.image}
+              alt={tree.name}
+              className="w-full h-full object-cover object-center"
+              loading="lazy"
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             />
+            {/* Shimmer light effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{
+                x: useTransform(mouseXSpring, [-0.5, 0.5], ["-100%", "100%"]),
+              }}
+            />
+            <div className="absolute top-3 right-3">
+              <Badge variant="secondary" className="font-body text-xs backdrop-blur-sm bg-secondary/80 shadow-md">
+                {tree.category}
+              </Badge>
+            </div>
           </div>
-        </div>
+          <div className="p-6 relative pb-20">
+            <h3 className="font-display text-xl font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">{tree.name}</h3>
+            <p className="text-muted-foreground text-sm mb-5 leading-relaxed line-clamp-2">{tree.description}</p>
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between pointer-events-none">
+              <div className="pointer-events-auto">
+                <span className="text-xs text-muted-foreground font-body">Starting at</span>
+                <span className="block text-2xl font-display font-bold text-primary">₹{tree.price}</span>
+              </div>
+              <div className="pointer-events-auto">
+                <WhatsAppButton
+                  phone={whatsappNumber}
+                  message={`Hi! I'd like to order: ${tree.name} (₹${tree.price})`}
+                  size="sm"
+                  variant="whatsapp"
+                  label="Order Now"
+                  onClick={(e) => e.stopPropagation()} // Prevent card click when clicking WhatsApp
+                />
+              </div>
+            </div>
+          </div>
+        </Link>
       </div>
     </motion.div>
   );
