@@ -16,15 +16,15 @@ services:
   backend:
     build:
       context: ./backend
-    privileged: true
+    env_file:
+      - .env
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     environment:
       - DATABASE_URL=postgres://nursery_user:nursery_pass@db:5432/nursery
-      - SECRET_KEY=django-insecure-prod-key
       - DEBUG=False
-      - ALLOWED_HOSTS=*
+      - ALLOWED_HOSTS=localhost,127.0.0.1
     depends_on:
       db:
         condition: service_healthy

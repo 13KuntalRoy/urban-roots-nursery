@@ -25,6 +25,11 @@ class Tree(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Tree"
+        verbose_name_plural = "Trees"
+        ordering = ['name']
+
 class Feature(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -46,4 +51,6 @@ class OrderStep(models.Model):
         return f"Step {self.step_number}: {self.title}"
 
     class Meta:
+        verbose_name = "Order Step"
+        verbose_name_plural = "Order Steps"
         ordering = ['step_number']

@@ -4,15 +4,17 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-==@*lf@ccpsb-&oiw7nungn83s3g9(8#f27ztnm=tfsw70xv7a')
+SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '*, .onrender.com').split(',')]
+ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://urbanroots-nursery.onrender.com',
+    'http://localhost',
     'http://localhost:8000',
+    'http://127.0.0.1',
 ]
 
 INSTALLED_APPS = [
@@ -148,4 +150,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://urbanroots-nursery.onrender.com',
+    'http://localhost',
+    'http://localhost:3000',
+    'http://localhost:5173',
+]

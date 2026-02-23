@@ -12,7 +12,7 @@ RUN npm run build
 FROM python:3.12-slim
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies + Caddy
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -25,28 +25,21 @@ RUN apt-get update && apt-get install -y \
     && apt-get update && apt-get install -y caddy \
     && rm -rf /var/lib/apt/lists/*
 
-# Backend setup
+# Install Python dependencies
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy backend source and frontend build
 COPY backend/ ./backend/
-WORKDIR /app/backend
-
-# Frontend build artifacts
 COPY --from=frontend-build /app/frontend/dist /srv
-
-# Root config for Caddy
 COPY Caddyfile /etc/caddy/Caddyfile
 
-# Entrypoint script to run both processes
-RUN echo '#!/bin/bash\n\
-    python manage.py collectstatic --noinput\n\
-    python manage.py migrate --noinput\n\
-    python create_superuser.py\n\
-    gunicorn --bind 0.0.0.0:8000 root.wsgi:application & \n\
-    caddy run --config /etc/caddy/Caddyfile --adapter caddyfile\n\
-    wait -n' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+# Copy entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-EXPOSE 80 443 8000
+WORKDIR /app/backend
+
+EXPOSE 80 8000
 
 CMD ["/app/entrypoint.sh"]

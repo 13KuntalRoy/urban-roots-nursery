@@ -19,4 +19,5 @@ media/
 fly.toml
 
 # Temp files
-*.txt
+tmp*.txt
+*.tmp
