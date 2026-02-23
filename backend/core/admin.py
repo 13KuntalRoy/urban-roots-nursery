@@ -25,4 +25,5 @@ class FeatureAdmin(admin.ModelAdmin):
 @admin.register(OrderStep)
 class OrderStepAdmin(admin.ModelAdmin):
     list_display = ('step_number', 'title')
+    list_display_links = ('title',)
     list_editable = ('step_number',)

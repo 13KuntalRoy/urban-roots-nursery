@@ -17,3 +17,6 @@ media/
 # Fly.io/Deployment
 .fly/
 fly.toml
+
+# Temp files
+*.txt
