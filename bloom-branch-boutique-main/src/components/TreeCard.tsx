@@ -81,11 +81,11 @@ const TreeCard: React.FC<TreeCardProps> = ({ tree, whatsappNumber, index }) => {
       <div style={{ transform: "translateZ(50px)" }} className="backface-hidden">
         <div className="aspect-[4/3] overflow-hidden bg-muted relative">
           <motion.img
-            src={tree.image.startsWith('http') ? tree.image : `${MEDIA_BASE_URL}${tree.image}`}
+            src={tree.image.startsWith('http') ? tree.image.replace('http://localhost:8000', '') : tree.image}
             alt={tree.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
             loading="lazy"
-            whileHover={{ scale: 1.15 }}
+            whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           />
           {/* Shimmer light effect */}
