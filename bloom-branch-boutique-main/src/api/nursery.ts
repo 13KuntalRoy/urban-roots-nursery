@@ -1,7 +1,16 @@
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const BASE_URL = VITE_API_URL !== undefined ? VITE_API_URL : 'http://localhost:8000';
 const API_BASE_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`.replace(/\/+$/, '');
-export const MEDIA_BASE_URL = BASE_URL || '';
+
+export const getMediaUrl = (path: string | null | undefined): string => {
+    if (!path) return '';
+    if (path.startsWith('http')) {
+        // Strip internal localhost if it leaks from backend
+        return path.replace('http://localhost:8000', '');
+    }
+    // Standardize leading slash for relative paths
+    return path.startsWith('/') ? path : `/${path}`;
+};
 
 export const fetchSiteConfig = async () => {
     const response = await fetch(`${API_BASE_URL}/config/`);

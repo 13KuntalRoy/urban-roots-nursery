@@ -3,6 +3,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { Link } from "react-router-dom";
+import { getMediaUrl } from "@/api/nursery";
 
 export interface Tree {
   id: number;
@@ -82,7 +83,7 @@ const TreeCard: React.FC<TreeCardProps> = ({ tree, whatsappNumber, index }) => {
         <Link to={`/tree/${tree.id}`} className="block h-full">
           <div className="aspect-[4/3] overflow-hidden bg-muted relative">
             <motion.img
-              src={tree.image.startsWith('http') ? tree.image.replace('http://localhost:8000', '') : tree.image}
+              src={getMediaUrl(tree.image)}
               alt={tree.name}
               className="w-full h-full object-cover object-center"
               loading="lazy"

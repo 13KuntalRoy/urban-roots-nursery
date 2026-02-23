@@ -9,9 +9,9 @@
         file_server
     }
 
-    # Media files from Django (handle_path strips the /media/ prefix)
-    handle_path /media/* {
-        root * /app/backend/media
+    # Media files from Django
+    handle /media/* {
+        root * /app/backend
         file_server
     }
 

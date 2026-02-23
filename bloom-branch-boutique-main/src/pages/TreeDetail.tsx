@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchTrees, fetchSiteConfig } from "@/api/nursery";
+import { fetchTrees, fetchSiteConfig, getMediaUrl } from "@/api/nursery";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, MessageCircle, ShieldCheck, Truck, Leaf } from "lucide-react";
@@ -71,7 +71,7 @@ const TreeDetail = () => {
                     >
                         <div className="aspect-[4/5] md:aspect-square rounded-3xl overflow-hidden bg-muted shadow-2xl border border-border/50">
                             <img
-                                src={tree.image.startsWith('http') ? tree.image.replace('http://localhost:8000', '') : tree.image}
+                                src={getMediaUrl(tree.image)}
                                 alt={tree.name}
                                 className="w-full h-full object-cover object-center"
                             />
