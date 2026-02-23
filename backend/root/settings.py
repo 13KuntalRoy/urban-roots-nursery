@@ -31,6 +31,9 @@ CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000'
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +46,66 @@ INSTALLED_APPS = [
     # Local apps
     'core',
 ]
-
+UNFOLD = {
+    "SITE_TITLE": "UrbanRoots Nursery",
+    "SITE_HEADER": "UrbanRoots Admin",
+    "SITE_URL": "/",
+    "SITE_ICON": None,
+    "DASHBOARD_CALLBACK": "nursery.views.dashboard_callback",
+    "STYLES": [],
+    "SCRIPTS": [],
+    "COLORS": {
+        "primary": {
+            "50": "240 253 244",
+            "100": "220 252 231",
+            "200": "187 247 208",
+            "300": "134 239 172",
+            "400": "74 222 128",
+            "500": "34 197 94",
+            "600": "22 163 74",
+            "700": "21 128 61",
+            "800": "22 101 52",
+            "900": "20 83 45",
+            "950": "5 46 22",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": "Navigation",
+                "items": [
+                    {
+                        "title": "Dashboard",
+                        "icon": "dashboard",
+                        "link": "/admin/",
+                    },
+                    {
+                        "title": "Trees",
+                        "icon": "park",
+                        "link": "/admin/nursery/tree/",
+                    },
+                    {
+                        "title": "Site Config",
+                        "icon": "settings",
+                        "link": "/admin/nursery/siteconfig/",
+                    },
+                    {
+                        "title": "Features",
+                        "icon": "star",
+                        "link": "/admin/nursery/feature/",
+                    },
+                    {
+                        "title": "Order Steps",
+                        "icon": "list",
+                        "link": "/admin/nursery/orderstep/",
+                    },
+                ],
+            },
+        ],
+    },
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
