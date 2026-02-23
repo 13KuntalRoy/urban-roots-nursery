@@ -1,6 +1,7 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-const API_BASE_URL = `${BASE_URL}/api`;
-export const MEDIA_BASE_URL = BASE_URL;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = VITE_API_URL !== undefined ? VITE_API_URL : 'http://localhost:8000';
+const API_BASE_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`.replace(/\/+$/, '');
+export const MEDIA_BASE_URL = BASE_URL || '';
 
 export const fetchSiteConfig = async () => {
     const response = await fetch(`${API_BASE_URL}/config/`);
