@@ -1,0 +1,31 @@
+:{$PORT} {
+    root * /srv
+    file_server
+
+    # Static files from Django
+    handle_path /static/* {
+        root * /app/staticfiles
+        file_server
+    }
+
+    # Media files from Django
+    handle_path /media/* {
+        root * /app/media
+        file_server
+    }
+
+    # API Proxy
+    handle_path /api/* {
+        reverse_proxy localhost:8000
+    }
+
+    # Admin Proxy
+    handle_path /admin/* {
+        reverse_proxy localhost:8000
+    }
+
+    # Fallback for React SPA (Client-side routing)
+    handle {
+        try_files {path} /index.html
+    }
+}

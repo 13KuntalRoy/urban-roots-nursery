@@ -1,0 +1,19 @@
+# Node
+node_modules/
+dist/
+.env
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+db.sqlite3
+staticfiles/
+media/
+
+# Fly.io/Deployment
+.fly/
+fly.toml
