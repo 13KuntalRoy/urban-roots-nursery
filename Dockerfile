@@ -42,6 +42,7 @@ COPY Caddyfile /etc/caddy/Caddyfile
 RUN echo '#!/bin/bash\n\
     python manage.py collectstatic --noinput\n\
     python manage.py migrate --noinput\n\
+    python create_superuser.py\n\
     gunicorn --bind 0.0.0.0:8000 root.wsgi:application & \n\
     caddy run --config /etc/caddy/Caddyfile --adapter caddyfile\n\
     wait -n' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
