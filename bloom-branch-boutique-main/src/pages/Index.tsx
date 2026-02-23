@@ -5,6 +5,8 @@ import heroImage from "@/assets/hero-trees.jpg";
 import { Button } from "@/components/ui/button";
 import TreeCatalog from "@/components/TreeCatalog";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import NatureSounds from "@/components/NatureSounds";
+import TreeGrowth from "@/components/TreeGrowth";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSiteConfig, fetchFeatures, fetchOrderSteps } from "@/api/nursery";
 
@@ -100,6 +102,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      <NatureSounds />
       {/* Navbar */}
       <motion.nav
         initial={{ y: -100 }}
@@ -258,7 +261,10 @@ const Index = () => {
       </section>
 
       {/* Tree Catalog */}
-      <section id="catalog" className="py-24 px-4">
+      <section id="catalog" className="relative py-24 px-4 overflow-hidden">
+        <div className="absolute top-0 right-0 -z-10 translate-x-1/2 -translate-y-1/2 opacity-30">
+          <TreeGrowth />
+        </div>
         <div className="container mx-auto">
           <AnimatedSection className="text-center mb-16">
             <motion.span variants={fadeUp} custom={0} className="inline-block text-primary font-body text-sm font-semibold tracking-widest uppercase mb-3">
