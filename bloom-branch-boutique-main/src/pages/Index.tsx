@@ -5,7 +5,6 @@ import heroImage from "@/assets/hero-trees.jpg";
 import { Button } from "@/components/ui/button";
 import TreeCatalog from "@/components/TreeCatalog";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import NatureSounds from "@/components/NatureSounds";
 import TreeGrowth from "@/components/TreeGrowth";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSiteConfig, fetchFeatures, fetchOrderSteps } from "@/api/nursery";
@@ -102,7 +101,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      <NatureSounds />
       {/* Navbar */}
       <motion.nav
         initial={{ y: -100 }}
@@ -223,8 +221,16 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-card border-b border-border">
-        <div className="container mx-auto px-4">
+      <section className="relative py-24 bg-card border-b border-border overflow-hidden">
+        {/* Decorative plantation background elements */}
+        <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 opacity-10">
+          <TreeGrowth scale={0.7} />
+        </div>
+        <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 opacity-15">
+          <TreeGrowth scale={1} />
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <AnimatedSection>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
@@ -233,24 +239,30 @@ const Index = () => {
                 { icon: Leaf, title: "Expert Advice", desc: "Get planting tips and care guides with every order" },
               ].map((f, i) => {
                 const feature = features?.[i] || f;
-                const Icon = f.icon; // We stick to static icons for now as mapping string to component is complex
+                const Icon = f.icon;
                 return (
                   <motion.div
                     key={feature.title}
                     variants={fadeUp}
                     custom={i}
                     whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                    className="flex items-start gap-4 p-8 rounded-xl bg-background/50 border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                    className="group flex items-start gap-4 p-8 rounded-2xl bg-background/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 hover:shadow-xl transition-all duration-500 relative overflow-hidden"
                   >
+                    {/* Interior mini-tree growth */}
+                    <div className="absolute -bottom-10 -right-10 opacity-0 group-hover:opacity-10 transition-opacity">
+                      <TreeGrowth scale={0.4} />
+                    </div>
+
                     <motion.div
-                      className="rounded-full bg-primary/10 p-3.5 shrink-0 animate-glow-pulse"
-                      whileHover={{ rotate: 10, scale: 1.1 }}
+                      className="rounded-2xl bg-primary/10 p-4 shrink-0 shadow-inner group-hover:bg-primary/20 transition-colors"
+                      whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
                     >
-                      <Icon className="h-6 w-6 text-primary" />
+                      <Icon className="h-7 w-7 text-primary" />
                     </motion.div>
-                    <div>
-                      <h3 className="font-display text-lg font-semibold text-foreground">{feature.title}</h3>
-                      <p className="text-muted-foreground text-sm mt-1">{feature.description || feature.desc}</p>
+                    <div className="relative z-10">
+                      <h3 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors">{feature.title}</h3>
+                      <p className="text-muted-foreground text-sm mt-2 leading-relaxed">{feature.description || feature.desc}</p>
                     </div>
                   </motion.div>
                 );

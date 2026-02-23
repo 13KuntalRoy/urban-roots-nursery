@@ -1,12 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const TreeGrowth = () => {
+interface TreeGrowthProps {
+    scale?: number;
+    className?: string;
+}
+
+const TreeGrowth: React.FC<TreeGrowthProps> = ({ scale = 1, className = "" }) => {
     return (
-        <div className="relative w-full h-[400px] flex items-end justify-center overflow-hidden pointer-events-none opacity-20 lg:opacity-40">
+        <div className={`relative flex items-end justify-center overflow-hidden pointer-events-none ${className}`} style={{ transform: `scale(${scale})` }}>
             <svg
                 viewBox="0 0 200 200"
-                className="w-full h-full max-w-md"
+                className="w-48 h-48 md:w-64 md:h-64"
                 fill="none"
                 stroke="currentColor"
             >
