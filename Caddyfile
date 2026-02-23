@@ -3,33 +3,31 @@
 }
 
 :{$PORT} {
-    root * /srv
-    file_server
-
     # Static files from Django
-    handle_path /static/* {
-        root * /app/staticfiles
+    handle /static/* {
+        root * /app/backend/staticfiles
         file_server
     }
 
     # Media files from Django
-    handle_path /media/* {
-        root * /app/media
+    handle /media/* {
+        root * /app/backend/media
         file_server
     }
 
-    # API Proxy
-    handle_path /api/* {
+    # Proxy to Django Gunicorn - KEEP PREFIX
+    handle /api/* {
         reverse_proxy localhost:8000
     }
 
-    # Admin Proxy
-    handle_path /admin/* {
+    handle /admin/* {
         reverse_proxy localhost:8000
     }
 
-    # Fallback for React SPA (Client-side routing)
+    # Frontend React SPA
     handle {
+        root * /srv
+        file_server
         try_files {path} /index.html
     }
 }
