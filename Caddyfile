@@ -1,3 +1,7 @@
+{
+    admin off
+}
+
 :{$PORT} {
     root * /srv
     file_server
